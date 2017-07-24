@@ -52,8 +52,15 @@ return [
         'backlog' => 256,   //listen backlog
         'heartbeat_idle_time' => 30,
         'heartbeat_check_interval' => 10,
-        'dispatch_mode' => 3, 
+        'dispatch_mode' => 1, 
     ],
+
+    //通信协议 eof：结束符, buf：自定义包头+包体
+    'protocol' => 'buf',
+    //包体的打包方式json,serialize
+    'pack' => 'json',
+    //是否启用gzip压缩true,false
+    'gzip' => true,
 
     //在启动时可以添加用户自定义的工作进程,必须是swoole_process
     'swoole_process' => [

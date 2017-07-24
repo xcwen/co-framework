@@ -1,7 +1,7 @@
 <?php
 return [
     //加密token，16位。可修改
-    'encipher' => 'uoI49l^^M!a5&bZt',
+    //'encipher' => 'uoI49l^^M!a5&bZt',
 
     //服务中心地址
     'node_center' => '',
@@ -54,7 +54,7 @@ return [
             'port' => 9519,
             //server配置，请根据实际情况调整参数
             'config' => [
-                'daemonize' => true,
+                //'daemonize' => true,
                 //worker进程数量         
                 'worker_num' => 25,
                 //最大请求数，超过后讲重启worker进程

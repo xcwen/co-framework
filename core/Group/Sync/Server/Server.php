@@ -5,6 +5,8 @@ namespace Group\Sync\Server;
 use Group\Common\ArrayToolkit;
 use Group\Exceptions\NotFoundException;
 use Group\Common\ClassMap;
+use Group\Protocol\Protocol;
+use Group\Protocol\DataPack;
 use swoole_table;
 use swoole_process;
 use swoole_server;
@@ -122,10 +124,8 @@ class Server
     }
 
     public function onReceive(swoole_server $serv, $fd, $fromId, $data)
-    { 
-        $data = trim($data);
-        $data = explode($serv->setting['package_eof'], $data);
-        $return = '';
+    {   
+        $data = $this->parse($data);
         try {
             $config = $this->config;
             foreach($data as $one){
@@ -133,8 +133,8 @@ class Server
                     $this->sendData($serv, $fd, 1);
                     return;
                 }
-
-                list($cmd, $one) = \Group\Sync\DataPack::unpack($one);
+ 
+                list($cmd, $one) = Protocol::unpack($one);
                 switch ($cmd) {
                     case 'close':
                         $this->sendData($serv, $fd, 1);
@@ -283,9 +283,7 @@ class Server
             //如果这个时候客户端还连接者的话说明需要返回返回的信息,
             //如果客户端已经关闭了的话说明不需要server返回数据
             //判断下data的类型
-            if (is_array($data)){
-                $data = json_encode($data);
-            }
+            $data = DataPack::pack($data);
             $serv->send($fd, $data);
         }
     }

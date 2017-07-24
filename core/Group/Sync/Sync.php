@@ -2,7 +2,8 @@
 
 namespace Group\Sync;
 
-use Group\Sync\Server\Server;
+use Group\Protocol\BufServer;
+use Group\Protocol\EofServer;
 
 class Sync
 {
@@ -60,7 +61,17 @@ class Sync
         $log = explode("/", $log);
         \FileCache::set(array_pop($log), '', implode("/", $log)."/");
         
-        $server = new Server($config[$argv[1]], $argv[1], $this->argv);
+        $protocol = \Config::get("app::protocol");
+        switch ($protocol) {
+          case 'buf':
+            $server = new BufServer($config[$argv[1]], $argv[1], $this->argv);
+            break;
+          case 'eof':
+          default:
+            $server = new EofServer($config[$argv[1]], $argv[1], $this->argv);
+            break;
+        }
+        
         die;
     }
 }

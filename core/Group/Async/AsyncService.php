@@ -4,6 +4,8 @@ namespace Group\Async;
 
 use Group\Async\Client\TCP;
 use Group\Events\KernalEvent;
+use Group\Protocol\DataPack;
+use Group\Protocol\Protocol;
 use Event;
 
 class AsyncService
@@ -53,7 +55,7 @@ class AsyncService
             $cmd = $this->service."\\".$cmd;
         }
 
-        $data = \Group\Sync\DataPack::pack($cmd, $data);
+        $data = Protocol::pack($cmd, $data);
         $data .= $this->packageEof;
         //$res = (yield new \Group\Async\Client\TCP($this->serv, $this->port, $data, $this->timeout));
         $container = (yield getContainer());
@@ -73,8 +75,8 @@ class AsyncService
                      'port' => $this->port, 'error' => $res['error']
                         ]));
             }
-        
-            $res['response'] = json_decode($res['response'], true);
+
+            $res['response'] = DataPack::unpack($res['response']);
             yield $res['response'];
         }
 
