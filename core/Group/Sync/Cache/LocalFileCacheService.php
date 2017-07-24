@@ -29,7 +29,7 @@ class LocalFileCacheService
      * @param  data(array)
      * @param  cacheDir(string)
      */
-    public function set($cacheName, $data, $cacheDir = false)
+    public function set($cacheName, $data, $cacheDir = false, $flag = false)
     {
         $cacheDir = $cacheDir == false ? self::$cacheDir : $cacheDir;
         $dir = __ROOT__.$cacheDir."/".$cacheName;
@@ -49,9 +49,8 @@ return ".$data.";";
             }
         }
 
-        file_put_contents("$dir/$file", $data);
+        file_put_contents("$dir/$file", $data, $flag);
     }
-
     /**
      * 文件是否存在
      *
