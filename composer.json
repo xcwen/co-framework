@@ -30,6 +30,7 @@
         "symfony/http-foundation": "~2.7.0",
         "phpunit/phpunit": "4.*",
         "firebase/php-jwt": "5.0.0",
-        "symfony/var-dumper": "~3.3.5"
+        "symfony/var-dumper": "~3.3.5",
+        "facile-it/doctrine-mysql-come-back": "^1.6"
     }
 }

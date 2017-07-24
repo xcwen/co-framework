@@ -140,15 +140,24 @@ class Dao
         $config = $this->config;
         $connections = new ConnectionLocator;
 
+        $connectionParams = [
+            'wrapperClass' => 'Facile\DoctrineMySQLComeBack\Doctrine\DBAL\Connection',
+            'driverClass' => 'Facile\DoctrineMySQLComeBack\Doctrine\DBAL\Driver\PDOMySql\Driver',
+            'driverOptions' => array(
+                'x_reconnect_attempts' => 3
+        )];
+
         if (isset($config['default'])) {
-            $connections->setDefault(function () use ($config) {
+            $connections->setDefault(function () use ($config, $connectionParams) {
+                $config['default'] = array_merge($config['default'], $connectionParams);
                 return \Doctrine\DBAL\DriverManager::getConnection($config['default'], new \Doctrine\DBAL\Configuration());
             });
         }
 
         if (isset($config['write'])) {
             foreach ($config['write'] as $name => $db) {
-                $connections->setWrite($name, function () use ($db) {
+                $connections->setWrite($name, function () use ($db, $connectionParams) {
+                    $db = array_merge($db, $connectionParams);
                     return \Doctrine\DBAL\DriverManager::getConnection($db, new \Doctrine\DBAL\Configuration());
                 });
             }
@@ -156,7 +165,8 @@ class Dao
 
         if (isset($config['read'])) {
             foreach ($config['read'] as $name => $db) {
-                $connections->setRead($name, function () use ($db) {
+                $connections->setRead($name, function () use ($db, $connectionParams) {
+                    $db = array_merge($db, $connectionParams);
                     return \Doctrine\DBAL\DriverManager::getConnection($db, new \Doctrine\DBAL\Configuration());
                 });
             }
@@ -171,10 +181,10 @@ class Dao
         //     $connection->getConfiguration()->setSQLLogger(app('debugStack'));
         // }
 
-        if ($connection->ping() === false) {
-           $connection->close();
-           $connection->connect();
-        }
+        // if ($connection->ping() === false) {
+        //    $connection->close();
+        //    $connection->connect();
+        // }
 
         return $connection;
     }
