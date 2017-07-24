@@ -5,3 +5,5 @@ index.php
 .htaccess
 /demo
 .DS_Store
+/app
+/assets
