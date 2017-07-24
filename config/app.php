@@ -40,11 +40,11 @@ return [
         ],
     ],
 
-    'swoole_host' => '127.0.0.1',
+    'host' => '127.0.0.1',
 
-    'swoole_port' => 9777,
+    'port' => 9777,
 
-    'swoole_setting' => [
+    'setting' => [
         //日志
         //'daemonize' => true,
         'log_file' => 'runtime/error.log',
@@ -63,7 +63,7 @@ return [
     'gzip' => true,
 
     //在启动时可以添加用户自定义的工作进程,必须是swoole_process
-    'swoole_process' => [
-        //'src\Admin\Process\HeartbeatProcess',
+    'process' => [
+        'src\Admin\Process\HeartbeatProcess',
     ],
 ];

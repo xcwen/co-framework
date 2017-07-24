@@ -24,9 +24,9 @@ class SwooleKernal
         $this->pidPath = __ROOT__."runtime/pid";
         $this->checkStatus();
 
-        $host = Config::get('app::swoole_host') ? : "127.0.0.1";
-        $port = Config::get('app::swoole_port') ? : 9777;
-        $setting = Config::get('app::swoole_setting');
+        $host = Config::get('app::host') ? : "127.0.0.1";
+        $port = Config::get('app::port') ? : 9777;
+        $setting = Config::get('app::setting');
 
         $this->http = new swoole_http_server($host, $port);
         $this->http->set($setting);
@@ -127,7 +127,7 @@ class SwooleKernal
 
     public function addProcesses()
     {
-        $processes = Config::get('app::swoole_process') ? : [];
+        $processes = Config::get('app::process') ? : [];
         foreach ($processes as $process) {
             $p = new $process($this->http);
             $this->http->addProcess($p->register());
