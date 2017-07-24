@@ -12,7 +12,7 @@ use swoole_process;
 use swoole_server;
 use Log;
 
-class Server 
+abstract class Server 
 {
     protected $serv;
 
@@ -63,6 +63,8 @@ class Server
 
         $this->serv->start();
     }
+
+    abstract public function parse($data);
 
     public function onStart(swoole_server $serv)
     {

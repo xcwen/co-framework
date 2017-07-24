@@ -8,18 +8,33 @@ class DataPack
 {   
     protected static $pack = false;
 
+    protected static $gzip = false;
+
     public static function pack($data)
     {   
         if (!self::$pack) {
             self::$pack = Config::get("app::pack");
         }
 
+        if (!self::$gzip) {
+            self::$gzip = Config::get("app::gzip");
+        }
+
+
         switch (self::$pack) {
             case 'serialize':
-                return serialize($data);
+                $data = serialize($data);
             case 'json':
             default:
-                return json_encode($data);
+                $data = json_encode($data);
+        }
+
+        if (self::$gzip) {
+            if (strlen($data) > 4096){
+                return gzdeflate($data, 6);
+            }else{
+                return gzdeflate($data, 0);
+            }
         }
     }
 
@@ -27,6 +42,14 @@ class DataPack
     {
         if (!self::$pack) {
             self::$pack = Config::get("app::pack");
+        }
+
+        if (!self::$gzip) {
+            self::$gzip = Config::get("app::gzip");
+        }
+
+        if (self::$gzip) {
+            $data = gzinflate($data);
         }
 
         switch (self::$pack) {
