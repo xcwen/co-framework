@@ -1,7 +1,7 @@
 {
-    "name": "group/framework",
-    "description": "The Group Framework.",
-    "keywords": ["framework", "Group"],
+    "name": "group-co/framework",
+    "description": "The Group-Co Framework.",
+    "keywords": ["framework", "Group-co"],
     "type": "project",
     "license": "MIT",
     "autoload": {
