@@ -4,7 +4,7 @@ namespace Group\Async\Client;
 
 use swoole_client;
 
-class TCP extends Base
+class Tcp extends Base
 {
     protected $ip;
 

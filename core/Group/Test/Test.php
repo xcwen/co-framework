@@ -5,6 +5,7 @@ namespace Group\Test;
 use PHPUnit_Framework_TestCase;
 use Group\Container\Container;
 use Group\App\App;
+use Group\EventDispatcher\EventDispatcherServiceProvider;
 
 abstract class Test extends PHPUnit_Framework_TestCase
 {   
@@ -28,9 +29,9 @@ abstract class Test extends PHPUnit_Framework_TestCase
         $ref = new \ReflectionClass($this);
         $methods = $ref->getMethods(\ReflectionMethod::IS_PUBLIC);
 
-        $app = new App();
         $container = (yield getContainer());
-        $app->registerOnRequestServices($container);
+        $provider = new EventDispatcherServiceProvider($container);
+        $provider->register();
 
         foreach ($methods as $method) {
             $methodName = $method->getName();
