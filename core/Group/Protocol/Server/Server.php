@@ -124,13 +124,12 @@ abstract class Server
         $data = $this->parse($data);
         try {
             $config = $this->config;
-            if ($data == 'p') {
-                $this->sendData($serv, $fd, 1);
-                return;
-            }
 
             list($cmd, $data) = Protocol::unpack($data);
             switch ($cmd) {
+                case 'ping':
+                    $this->sendData($serv, $fd, 1);
+                    return;
                 case 'close':
                     $this->sendData($serv, $fd, 1);
                     $serv->shutdown();

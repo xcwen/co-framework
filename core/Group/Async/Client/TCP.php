@@ -58,7 +58,7 @@ class TCP extends Base
                 swoole_timer_after(floatval($this->timeout) * 1000, function () use ($callback) {
                     if (!$this->isFinish) {
                         $this->client->close();
-                        call_user_func_array($callback, array('response' => 'false', 'calltime' => $this->timeout, 'error' => 'timeout'));
+                        call_user_func_array($callback, array('response' => false, 'calltime' => $this->timeout, 'error' => 'timeout'));
                     }
                 });
             });
