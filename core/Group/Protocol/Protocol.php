@@ -34,7 +34,7 @@ class Protocol
     }
 
     public static function unpack($data = [])
-    {   
+    {
         $data = DataPack::unpack($data);
         return [$data['cmd'], $data['data']];
     }

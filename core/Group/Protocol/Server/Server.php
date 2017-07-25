@@ -276,7 +276,9 @@ abstract class Server
             //如果这个时候客户端还连接者的话说明需要返回返回的信息,
             //如果客户端已经关闭了的话说明不需要server返回数据
             //判断下data的类型
-            $data = Protocol::pack("response", $data);
+            //$data = Protocol::pack("response", $data);
+            $data = DataPack::pack(['cmd' => '', 'data' => $data]);
+
             $serv->send($fd, $data);
         }
     }

@@ -5,6 +5,7 @@ namespace Group\Protocol;
 use Config;
 use Group\Protocol\Client\BufTcp;
 use Group\Protocol\Client\EofTcp;
+use Group\Protocol\Client\Tcp;
 
 class Client
 {   
@@ -19,18 +20,19 @@ class Client
     }
 
     public function getClient()
-    {
-        $protocol = Config::get("app::protocol");
-            switch ($protocol) {
-            case 'buf':
-              $server = new BufTcp($this->ip, $this->port);
-              break;
-            case 'eof':
-            default:
-              $server = new EofTcp($this->ip, $this->port);
-              break;
-        }
+    {   
+        return new Tcp($this->ip, $this->port);
+        // $protocol = Config::get("app::protocol");
+        //     switch ($protocol) {
+        //     case 'buf':
+        //       $server = new BufTcp($this->ip, $this->port);
+        //       break;
+        //     case 'eof':
+        //     default:
+        //       $server = new EofTcp($this->ip, $this->port);
+        //       break;
+        // }
 
-        return $server;
+        // return $server;
     }
 }
