@@ -20,13 +20,14 @@ class DataPack
             self::$gzip = Config::get("app::gzip");
         }
 
-
         switch (self::$pack) {
             case 'serialize':
                 $data = serialize($data);
+                break;
             case 'json':
             default:
                 $data = json_encode($data);
+                break;
         }
 
         if (self::$gzip) {
@@ -35,6 +36,8 @@ class DataPack
             }else{
                 return gzdeflate($data, 0);
             }
+        } else {
+            return $data;
         }
     }
 

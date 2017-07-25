@@ -7,6 +7,8 @@ use Group\Protocol\DataPack;
 
 class Protocol 
 {   
+    protected static $packageEof = "\r\n";
+
     protected static $protocol = false;
 
     public static function pack($cmd = '', $data = [])
@@ -27,7 +29,7 @@ class Protocol
                 return $head . $body;
             case 'eof':
             default:
-                return DataPack::pack(['cmd' => $cmd, 'data' => $data]);
+                return DataPack::pack(['cmd' => $cmd, 'data' => $data]).self::$packageEof;
         }
     }
 

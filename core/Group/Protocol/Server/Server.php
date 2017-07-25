@@ -1,6 +1,6 @@
 <?php
 
-namespace Group\Sync\Server;
+namespace Group\Protocol\Server;
 
 use Group\Common\ArrayToolkit;
 use Group\Exceptions\NotFoundException;
@@ -32,13 +32,7 @@ abstract class Server
 
     protected $argv;
 
-    protected $setting = [
-        //打开EOF检测
-        'open_eof_check' => true, 
-        //设置EOF 防止粘包
-        'package_eof' => "\r\n", 
-        'open_eof_split' => true, //底层拆分eof的包
-        ];
+    protected $setting = [];
 
     public function __construct($config =[], $servName, $argv = [])
     {   
@@ -130,26 +124,24 @@ abstract class Server
         $data = $this->parse($data);
         try {
             $config = $this->config;
-            foreach($data as $one){
-                if ($one == 'p') {
+            if ($data == 'p') {
+                $this->sendData($serv, $fd, 1);
+                return;
+            }
+
+            list($cmd, $data) = Protocol::unpack($data);
+            switch ($cmd) {
+                case 'close':
                     $this->sendData($serv, $fd, 1);
-                    return;
-                }
- 
-                list($cmd, $one) = Protocol::unpack($one);
-                switch ($cmd) {
-                    case 'close':
-                        $this->sendData($serv, $fd, 1);
-                        $serv->shutdown();
-                        break;
-                    case 'reload':
-                        $this->sendData($serv, $fd, 1);
-                        $serv->reload();
-                        break;
-                    default:
-                        $serv->task(['cmd' => $cmd, 'data' => $one, 'fd' => $fd]);
-                        break;
-                }
+                    $serv->shutdown();
+                    break;
+                case 'reload':
+                    $this->sendData($serv, $fd, 1);
+                    $serv->reload();
+                    break;
+                default:
+                    $serv->task(['cmd' => $cmd, 'data' => $data, 'fd' => $fd]);
+                    break;
             }
         } catch (\Exception $e) {
             $this->record([
@@ -285,7 +277,7 @@ abstract class Server
             //如果这个时候客户端还连接者的话说明需要返回返回的信息,
             //如果客户端已经关闭了的话说明不需要server返回数据
             //判断下data的类型
-            $data = DataPack::pack($data);
+            $data = Protocol::pack("response", $data);
             $serv->send($fd, $data);
         }
     }

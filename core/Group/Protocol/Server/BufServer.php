@@ -1,9 +1,8 @@
 <?php
 
-namespace Group\Protocol;
+namespace Group\Protocol\Server;
 
-use Group\Sync\Encipher;
-use Group\Sync\Server\Server;
+use Group\Protocol\Server\Server;
 
 class BufServer extends Server
 {   
@@ -32,7 +31,7 @@ class BufServer extends Server
     }
 
     public function parse($data)
-    {   
-        return [substr($data, 4)];
+    {
+        return substr($data, 4);
     }
 }

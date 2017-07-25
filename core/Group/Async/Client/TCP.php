@@ -22,12 +22,15 @@ class TCP extends Base
 
     protected $isFinish = false;
 
+    protected $setting = [];
+
     public function __construct($ip, $port)
     {
         $this->ip = $ip;
         $this->port = $port;
 
         $this->client = new swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
+        $this->client->set($this->setting);
     }
 
     public function setTimeout($timeout)
@@ -38,6 +41,11 @@ class TCP extends Base
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    public function parse($data)
+    {
+        return $data;
     }
 
     public function call(callable $callback)
@@ -64,6 +72,7 @@ class TCP extends Base
             });
 
             $this->client->on("receive", function ($cli, $data) use ($callback) {
+                $data = $this->parse($data);
                 $this->isFinish = true;
                 $this->calltime = microtime(true) - $this->calltime;
                 $cli->close();

@@ -1,9 +1,8 @@
 <?php
 
-namespace Group\Protocol;
+namespace Group\Protocol\Server;
 
-use Group\Sync\Encipher;
-use Group\Sync\Server\Server;
+use Group\Protocol\Server\Server;
 
 class EofServer extends Server
 {   
@@ -23,9 +22,8 @@ class EofServer extends Server
     }
 
     public function parse($data)
-    {   
-        $data = trim($data);
+    {
         $data = explode($this->setting['package_eof'], $data);
-        return $data;
+        return $data[0];
     }
 }

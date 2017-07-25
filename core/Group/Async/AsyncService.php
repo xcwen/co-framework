@@ -2,7 +2,7 @@
 
 namespace Group\Async;
 
-use Group\Async\Client\TCP;
+use Group\Protocol\Client;
 use Group\Events\KernalEvent;
 use Group\Protocol\DataPack;
 use Group\Protocol\Protocol;
@@ -16,19 +16,16 @@ class AsyncService
 
     protected $port;
 
-    protected $packageEof;
-
     protected $timeout = 5;
 
     protected $calls = [];
 
     protected $callId = 0;
 
-    public function __construct($serv, $port, $packageEof = "\r\n")
+    public function __construct($serv, $port)
     {   
         $this->serv = $serv;
         $this->port = $port;
-        $this->packageEof = $packageEof;
     }
 
     public function setTimeout($timeout)
@@ -56,11 +53,10 @@ class AsyncService
         }
 
         $data = Protocol::pack($cmd, $data);
-        $data .= $this->packageEof;
-        //$res = (yield new \Group\Async\Client\TCP($this->serv, $this->port, $data, $this->timeout));
         $container = (yield getContainer());
         $client = $container->singleton('tcp:'.$this->serv.':'.$this->port, function() {
-            return new TCP($this->serv, $this->port);
+            $client = new Client($this->serv, $this->port);
+            return $client->getClient();
         });
 
         $client->setTimeout($this->timeout);
@@ -76,7 +72,8 @@ class AsyncService
                         ]));
             }
 
-            $res['response'] = DataPack::unpack($res['response']);
+            list($cmd, $data) = Protocol::unpack($res['response']);
+            $res['response'] = $data;
             yield $res['response'];
         }
 
