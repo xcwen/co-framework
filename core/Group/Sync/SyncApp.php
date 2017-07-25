@@ -52,9 +52,9 @@ class SyncApp
     ];
 
     protected $serviceProviders = [
-        'Group\Sync\Redis\RedisServiceProvider',
+        'Group\Sync\Cache\RedisServiceProvider',
         'Group\Sync\Cache\FileCacheServiceProvider',
-        'Group\Sync\Cache\StaticCacheServiceProvider',
+        'Group\Cache\StaticCacheServiceProvider',
         'Group\Sync\Cache\CacheServiceProvider',
     ];
 

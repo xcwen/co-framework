@@ -1,6 +1,6 @@
 <?php
 
-namespace Group\Sync\Redis;
+namespace Group\Sync\Cache;
 
 use ServiceProvider;
 use Redis;
