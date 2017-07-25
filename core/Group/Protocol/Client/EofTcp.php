@@ -15,14 +15,14 @@ class EofTcp extends Tcp
             'open_eof_check' => true, 
             //设置EOF 防止粘包
             'package_eof' => "\r\n", 
-            'open_eof_split' => true, //底层拆分eof的包
+            'package_max_length' => 2000000, 
         ];
 
         parent::__construct($ip, $port);
     }
 
     public function parse($data)
-    {   
+    {
         $data = explode($this->setting['package_eof'], $data);
         return $data[0];
     }

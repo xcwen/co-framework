@@ -54,10 +54,12 @@ class AsyncService
 
         $data = Protocol::pack($cmd, $data);
         $container = (yield getContainer());
-        $client = $container->singleton('tcp:'.$this->serv.':'.$this->port, function() {
-            $client = new Client($this->serv, $this->port);
-            return $client->getClient();
-        });
+        // $client = $container->singleton('tcp:'.$this->serv.':'.$this->port, function() {
+        //     $client = new Client($this->serv, $this->port);
+        //     return $client->getClient();
+        // });
+        $client = new Client($this->serv, $this->port);
+        $client = $client->getClient();
 
         $client->setTimeout($this->timeout);
         $client->setData($data);

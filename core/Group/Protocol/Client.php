@@ -20,19 +20,19 @@ class Client
     }
 
     public function getClient()
-    {   
-        return new Tcp($this->ip, $this->port);
-        // $protocol = Config::get("app::protocol");
-        //     switch ($protocol) {
-        //     case 'buf':
-        //       $server = new BufTcp($this->ip, $this->port);
-        //       break;
-        //     case 'eof':
-        //     default:
-        //       $server = new EofTcp($this->ip, $this->port);
-        //       break;
-        // }
+    {
+        $protocol = Config::get("app::protocol");
+            switch ($protocol) {
+            case 'buf':
+              $server = new BufTcp($this->ip, $this->port);
+              break;
+            case 'eof':
+            default:
+              $server = new EofTcp($this->ip, $this->port);
 
-        // return $server;
+              break;
+        }
+
+        return $server;
     }
 }
