@@ -42,7 +42,7 @@ abstract class Server
         $this->servName = $servName;
         $this->pidPath = __ROOT__."runtime/service/{$servName}/pid";
         $this->checkStatus();
-        
+
         $this->serv = new swoole_server($config['serv'], $config['port']);
         $this->serv->set($config['config']);
 
@@ -120,7 +120,7 @@ abstract class Server
     }
 
     public function onReceive(swoole_server $serv, $fd, $fromId, $data)
-    {   
+    {
         $data = $this->parse($data);
         try {
             $config = $this->config;
@@ -276,8 +276,8 @@ abstract class Server
             //如果这个时候客户端还连接者的话说明需要返回返回的信息,
             //如果客户端已经关闭了的话说明不需要server返回数据
             //判断下data的类型
-            //$data = Protocol::pack("", $data);
-            $data = DataPack::pack(['cmd' => '', 'data' => $data]);
+            $data = Protocol::pack("", $data);
+            //$data = DataPack::pack(['cmd' => '', 'data' => $data]);
             $serv->send($fd, $data);
         }
     }

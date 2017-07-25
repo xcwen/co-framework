@@ -49,7 +49,7 @@ class Tcp extends Base
     }
 
     public function call(callable $callback)
-    {   
+    {
         if (!$this->isInit) {
             $this->client->on("connect", function ($cli) use ($callback) {
                 $this->calltime = microtime(true);
@@ -77,8 +77,8 @@ class Tcp extends Base
                     $data = $this->parse($data);
                     $this->isFinish = true;
                     $this->calltime = microtime(true) - $this->calltime;
-                    $cli->close();
                     call_user_func_array($callback, array('response' => $data, 'error' => null, 'calltime' => $this->calltime));
+                    $cli->close();
                 }
             });
             $this->isInit = true;
