@@ -58,6 +58,7 @@ class TCP extends Base
                 swoole_timer_after(floatval($this->timeout) * 1000, function () use ($callback) {
                     if (!$this->isFinish) {
                         $this->client->close();
+                        $this->isFinish = true;
                         call_user_func_array($callback, array('response' => false, 'calltime' => $this->timeout, 'error' => 'timeout'));
                     }
                 });
@@ -72,11 +73,13 @@ class TCP extends Base
             });
 
             $this->client->on("receive", function ($cli, $data) use ($callback) {
-                $data = $this->parse($data);
-                $this->isFinish = true;
-                $this->calltime = microtime(true) - $this->calltime;
-                $cli->close();
-                call_user_func_array($callback, array('response' => $data, 'error' => null, 'calltime' => $this->calltime));
+                if (!$this->isFinish) {
+                    $data = $this->parse($data);
+                    $this->isFinish = true;
+                    $this->calltime = microtime(true) - $this->calltime;
+                    $cli->close();
+                    call_user_func_array($callback, array('response' => $data, 'error' => null, 'calltime' => $this->calltime));
+                }
             });
             $this->isInit = true;
         }

@@ -278,7 +278,6 @@ abstract class Server
             //判断下data的类型
             //$data = Protocol::pack("response", $data);
             $data = DataPack::pack(['cmd' => '', 'data' => $data]);
-
             $serv->send($fd, $data);
         }
     }
