@@ -28,8 +28,9 @@ class Protocol
                 $head = pack("N", $bodyLen);
                 return $head . $body;
             case 'eof':
-            default:
                 return DataPack::pack(['cmd' => $cmd, 'data' => $data]).self::$packageEof;
+            default:
+                return DataPack::pack(['cmd' => $cmd, 'data' => $data]);
         }
     }
 

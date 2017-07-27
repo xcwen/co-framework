@@ -27,9 +27,10 @@ class Client
               $server = new BufTcp($this->ip, $this->port);
               break;
             case 'eof':
-            default:
               $server = new EofTcp($this->ip, $this->port);
-
+              break;
+            default:
+              $server = new Tcp($this->ip, $this->port);
               break;
         }
 
