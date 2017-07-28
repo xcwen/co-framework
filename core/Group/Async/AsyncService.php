@@ -5,7 +5,7 @@ namespace Group\Async;
 use Group\Protocol\Client;
 use Group\Events\KernalEvent;
 use Group\Protocol\DataPack;
-use Group\Protocol\Protocol;
+use Group\Protocol\ServiceProtocol as Protocol;
 use Event;
 
 class AsyncService

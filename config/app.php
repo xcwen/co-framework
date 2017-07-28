@@ -55,12 +55,16 @@ return [
         'dispatch_mode' => 1, 
     ],
 
-    //此参数可不填。通信协议 eof：结束符, buf：自定义包头+包体
-    'protocol' => '',
+    //此参数可不填。通信协议 eof：结束符, buf：包头+包体。也可以填自定义的customProtocols
+    'protocol' => 'buf',
     //包体的打包方式json,serialize
-    'pack' => 'serialize',
+    'pack' => 'json',
     //是否启用gzip压缩true,false
-    'gzip' => true,
+    'gzip' => false,
+
+    'customProtocols' => [
+        'myeof' => 'src\Web\Protocol\MyeofProtocol',
+    ],
 
     //在启动时可以添加用户自定义的工作进程,必须是swoole_process
     'process' => [

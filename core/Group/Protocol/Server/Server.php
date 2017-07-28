@@ -5,7 +5,7 @@ namespace Group\Protocol\Server;
 use Group\Common\ArrayToolkit;
 use Group\Exceptions\NotFoundException;
 use Group\Common\ClassMap;
-use Group\Protocol\Protocol;
+use Group\Protocol\ServiceProtocol as Protocol;
 use Group\Protocol\DataPack;
 use swoole_table;
 use swoole_process;
