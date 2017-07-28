@@ -12,13 +12,7 @@ class DataPack
 
     public static function pack($data)
     {   
-        if (!self::$pack) {
-            self::$pack = Config::get("app::pack");
-        }
-
-        if (!self::$gzip) {
-            self::$gzip = Config::get("app::gzip");
-        }
+        self::checkConfig();
 
         switch (self::$pack) {
             case 'serialize':
@@ -31,9 +25,9 @@ class DataPack
         }
 
         if (self::$gzip) {
-            if (strlen($data) > 4096){
+            if (strlen($data) > 4096) {
                 return gzdeflate($data, 6);
-            }else{
+            } else {
                 return gzdeflate($data, 0);
             }
         } else {
@@ -43,13 +37,7 @@ class DataPack
 
     public static function unpack($data)
     {
-        if (!self::$pack) {
-            self::$pack = Config::get("app::pack");
-        }
-
-        if (!self::$gzip) {
-            self::$gzip = Config::get("app::gzip");
-        }
+        self::checkConfig();
 
         if (self::$gzip) {
             $data = gzinflate($data);
@@ -61,6 +49,17 @@ class DataPack
             case 'json':
             default:
                 return json_decode($data, true);
+        }
+    }
+
+    public static function checkConfig()
+    {
+        if (!self::$pack) {
+            self::$pack = Config::get("app::pack");
+        }
+
+        if (!self::$gzip) {
+            self::$gzip = Config::get("app::gzip");
         }
     }
 }
