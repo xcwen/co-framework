@@ -16,6 +16,8 @@ class AsyncTcp
 
     protected $timeout = 5;
 
+    protected $data = '';
+
     public function __construct($serv, $port)
     {   
         $this->serv = $serv;
@@ -27,18 +29,34 @@ class AsyncTcp
         $this->timeout = $timeout;
     }
 
-    public function call($data = [], $timeout = false, $monitor = true)
+    public function call($data = '', $monitor = true)
     {   
         if (!$this->serv || !$this->port) {
             yield false;
         }
-        
-        if (is_numeric($timeout)) {
-            $this->timeout = $timeout;
-        }
 
         $data = Protocol::pack($data);
-        
+        $res = (yield $this->request($data, $monitor));
+        yield $res;
+    }
+
+    public function addCall($data = '')
+    {   
+        $data = Protocol::pack($data);
+
+        $this->data = $this->data.$data;
+    }
+
+    public function multiCall($monitor = true)
+    {   
+        $res = (yield $this->request($this->data, $monitor));
+        $this->data = '';
+        yield $res;
+    }
+
+    public function request($data, $monitor)
+    {   
+        $container = (yield getContainer());
         $client = new Tcp($this->serv, $this->port);
         $client->setTimeout($this->timeout);
         $client->setData($data);
@@ -46,7 +64,6 @@ class AsyncTcp
 
         if ($res && $res['response']) {
             if ($monitor) {
-                $container = (yield getContainer());
                 //抛出一个事件出去，方便做上报
                 yield $container->singleton('eventDispatcher')->dispatch(KernalEvent::SERVICE_CALL, 
                     new Event(['calltime' => $res['calltime'], 'ip' => $this->serv,

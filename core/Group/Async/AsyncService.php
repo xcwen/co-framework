@@ -54,13 +54,8 @@ class AsyncService
 
         $data = Protocol::pack($cmd, $data);
         $container = (yield getContainer());
-        // $client = $container->singleton('tcp:'.$this->serv.':'.$this->port, function() {
-        //     $client = new Client($this->serv, $this->port);
-        //     return $client->getClient();
-        // });
         $client = new Client($this->serv, $this->port);
         $client = $client->getClient();
-
         $client->setTimeout($this->timeout);
         $client->setData($data);
         $res = (yield $client);
@@ -92,7 +87,7 @@ class AsyncService
         return $callId;
     }
 
-    public function multiCall($timeout = false)
+    public function multiCall()
     {   
         $res = (yield $this->call($this->calls['cmd'], $this->calls['data'], $timeout));
         $this->callId = 0;
