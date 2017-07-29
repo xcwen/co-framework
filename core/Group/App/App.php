@@ -249,6 +249,16 @@ class App
         }
     }
 
+    public function releasePool()
+    {
+        $resources = ['redisPool', 'mysqlPool'];
+        foreach ($resources as $resource) {
+            if (!is_null($this->singleton($resource))) {
+                $this->singleton($resource)->close();
+            }
+        }
+    }
+
     private function initRoutingConfig()
     {   
         $file = 'route/routing.php';

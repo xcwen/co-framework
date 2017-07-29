@@ -53,6 +53,7 @@ return [
         'heartbeat_idle_time' => 30,
         'heartbeat_check_interval' => 10,
         'dispatch_mode' => 1, 
+        'max_request' => 10000,
     ],
 
     //此参数可不填。通信协议 eof：结束符, buf：包头+包体。也可以填自定义的customProtocols

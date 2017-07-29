@@ -34,9 +34,10 @@ class SwooleKernal
         $this->http->on('Start', [$this, 'onStart']);
         $this->http->on('WorkerStart', [$this, 'onWorkerStart']);
         $this->http->on('WorkerStop', [$this, 'onWorkerStop']);
+        $this->http->on('WorkerExit', [$this, 'onWorkerExit']);
         $this->http->on('Request', [$this, 'onRequest']);
         $this->http->on('shutdown', [$this, 'onShutdown']);
-
+        
         $this->addProcesses();
         
         $this->start();
@@ -78,9 +79,11 @@ class SwooleKernal
         echo "HTTP Worker Start...".PHP_EOL;
     }
 
-    public function onWorkerStop($serv, $workerId)
+    public function onWorkerStop($serv, $workerId) {}
+
+    public function onWorkerExit($serv, $workerId)
     {
-        
+        $this->app->releasePool();
     }
 
     public function onRequest($request, $response)
