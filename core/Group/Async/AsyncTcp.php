@@ -2,10 +2,10 @@
 
 namespace Group\Async;
 
-use Group\Protocol\Client\Tcp;
 use Group\Events\KernalEvent;
 use Group\Protocol\DataPack;
 use Group\Protocol\Protocol;
+use Group\Protocol\Client;
 use Event;
 
 class AsyncTcp
@@ -16,7 +16,7 @@ class AsyncTcp
 
     protected $timeout = 5;
 
-    protected $data = '';
+    protected $data = [];
 
     public function __construct($serv, $port)
     {   
@@ -36,7 +36,7 @@ class AsyncTcp
         }
 
         $data = Protocol::pack($data);
-        $res = (yield $this->request($data, $monitor));
+        $res = (yield $this->request($data, 1, $monitor));
         yield $res;
     }
 
@@ -44,21 +44,23 @@ class AsyncTcp
     {   
         $data = Protocol::pack($data);
 
-        $this->data = $this->data.$data;
+        $this->data[] = $data;
     }
 
     public function multiCall($monitor = true)
     {   
-        $res = (yield $this->request($this->data, $monitor));
-        $this->data = '';
+        $res = (yield $this->request(implode('', $this->data), count($this->data), $monitor));
+        $this->data = [];
         yield $res;
     }
 
-    public function request($data, $monitor)
+    public function request($data, $count, $monitor)
     {   
         $container = (yield getContainer());
-        $client = new Tcp($this->serv, $this->port);
+        $client = new Client($this->serv, $this->port);
+        $client = $client->getClient();
         $client->setTimeout($this->timeout);
+        $client->setCount($count);
         $client->setData($data);
         $res = (yield $client);
 

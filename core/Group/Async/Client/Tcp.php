@@ -24,6 +24,10 @@ class Tcp extends Base
 
     protected $timeId;
 
+    protected $count = 1;
+
+    protected $return;
+
     public function __construct($ip, $port)
     {
         $this->ip = $ip;
@@ -36,6 +40,11 @@ class Tcp extends Base
     public function setTimeout($timeout)
     {
         $this->timeout = $timeout;
+    }
+
+    public function setCount($count)
+    {
+        $this->count = $count;
     }
 
     public function setData($data)
@@ -73,14 +82,23 @@ class Tcp extends Base
 
         $this->client->on("receive", function ($cli, $data) use ($callback) {
             if (!$this->isFinish) {
-                $this->clearTimer();
 
                 $data = $this->parse($data);
-                $this->isFinish = true;
-                $this->calltime = microtime(true) - $this->calltime;
+                $this->return[] = $data;
 
-                call_user_func_array($callback, array('response' => $data, 'error' => null, 'calltime' => $this->calltime));
-                $cli->close();
+                $this->count--;
+                if ($this->count == 0) {
+                    $this->clearTimer();
+                    $this->isFinish = true;
+                    $this->calltime = microtime(true) - $this->calltime;
+                    if (count($this->return) == 1) {
+                        $return = $this->return[0];
+                    } else {
+                        $return = $this->return;
+                    }
+                    call_user_func_array($callback, array('response' => $return, 'error' => null, 'calltime' => $this->calltime));
+                    $cli->close();
+                }
             }
         });
 
