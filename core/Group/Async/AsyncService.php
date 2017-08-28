@@ -53,7 +53,6 @@ class AsyncService
         }
 
         $data = Protocol::pack($cmd, $data);
-        $container = (yield getContainer());
         $client = new Client($this->serv, $this->port);
         $client = $client->getClient();
         $client->setTimeout($this->timeout);
@@ -62,6 +61,7 @@ class AsyncService
 
         if ($res && $res['response']) {
             if ($monitor) {
+                $container = (yield getContainer());
                 //抛出一个事件出去，方便做上报
                 yield $container->singleton('eventDispatcher')->dispatch(KernalEvent::SERVICE_CALL, 
                     new Event(['cmd' => $cmd, 'calltime' => $res['calltime'], 'ip' => $this->serv,
