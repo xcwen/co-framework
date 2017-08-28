@@ -18,12 +18,8 @@ class AsyncHttpTest extends Test
 
     public function unitpost()
     {   
-        $http = new AsyncHttp('54.222.154.77', 443, true);
-        $http->setHost('www.clothesmake.com.cn');
-        $res = (yield $http->post('/stylist/post/like', ['postId' => 52]));
-
-        dump($res);
-        // $this->assertEquals('200', $res->statusCode);
-        // $this->assertEquals('hello world!', $res->body);
+        $http = new AsyncHttp('127.0.0.1', 443, true);
+        $http->setHost('groupco.com');
+        $res = (yield $http->post('/test', ['postId' => 52]));
     }
 }
