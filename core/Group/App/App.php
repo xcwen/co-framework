@@ -56,6 +56,7 @@ class App
         'AsyncLog'          => 'Group\Async\AsyncLog',
         'AsyncService'      => 'Group\Async\AsyncService',
         'AsyncTcp'          => 'Group\Async\AsyncTcp',
+        'AsyncHttp'         => 'Group\Async\AsyncHttp',
     ];
 
     /**
