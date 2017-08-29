@@ -53,7 +53,9 @@ class Http extends Base
 
     public function setData($data)
     {   
-        $this->client->setData($data);
+        if ($data != "") {
+            $this->client->setData($data);
+        }
     }
 
     public function setCookies(array $cookies)

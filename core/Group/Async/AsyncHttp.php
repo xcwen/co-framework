@@ -3,10 +3,13 @@
 namespace Group\Async;
 
 use Config;
-use \Group\Async\Client\Http;
+use Group\Async\Client\Http;
+use Group\Async\Client\Dns;
 
 class AsyncHttp
 {   
+    protected $domain;
+
     protected $serv;
 
     protected $port;
@@ -27,11 +30,9 @@ class AsyncHttp
         'Accept-Encoding' => 'gzip, deflate'
     ];
 
-    public function __construct($serv, $port, $ssl = false)
+    public function __construct($domain)
     {   
-        $this->serv = $serv;
-        $this->port = $port;
-        $this->ssl = $ssl;
+        $this->domain = $domain;
     }
 
     public function setTimeout($timeout)
@@ -60,7 +61,7 @@ class AsyncHttp
     }
 
     public function getClient()
-    {
+    {   
         $client = new Http($this->serv, $this->port, $this->ssl);
         $client->setTimeout($this->timeout);
         $client->setKeepalive($this->keepalive);
@@ -71,7 +72,9 @@ class AsyncHttp
     }
 
     public function get($path)
-    {
+    {   
+        yield $this->parseDomain();
+
         $client = $this->getClient();
         $client->setMethod("GET");
         $client->setPath($path);
@@ -84,8 +87,10 @@ class AsyncHttp
         yield false;
     }
 
-    public function post($path, $data)
-    {
+    public function post($path, $data = [])
+    {   
+        yield $this->parseDomain();
+
         $this->headers['Content-Type'] = "application/x-www-form-urlencoded;charset=UTF-8";
         $client = $this->getClient();
         $client->setMethod("POST");
@@ -98,5 +103,43 @@ class AsyncHttp
         }
 
         yield false;
+    }
+
+    private function parseDomain()
+    {   
+        preg_match("/^http:\/\/(.*)/", $this->domain, $matchs);
+        if ($matchs) {
+            $this->port = 80;
+            yield $this->dnsLookup($matchs[1]);
+            return;
+        }
+
+        preg_match("/^https:\/\/(.*)/", $this->domain, $matchs);
+        if ($matchs) {
+            $this->port = 443;
+            $this->ssl = true;
+            yield $this->dnsLookup($matchs[1]);
+            return;
+        }
+
+        throw new \Exception("Error domain, must start with http:// or https://", 1);   
+    }
+
+    private function dnsLookup($domain)
+    {
+        $domains = explode(":", $domain);
+        if (count($domains) == 2) {
+            $this->serv = $domains[0];
+            $this->port = $domains[1];
+            yield;
+        }
+
+        $dns = new Dns($domain);
+        $res = (yield $dns);
+
+        if ($res && $res['response']) {
+            $this->serv = $res['response']['ip'];
+            $this->setHost($res['response']['host']);
+        }
     }
 }
