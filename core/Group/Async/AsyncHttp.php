@@ -60,24 +60,26 @@ class AsyncHttp
         $this->headers = $headers;
     }
 
-    public function getClient()
+    public function getClient($path)
     {   
         $client = new Http($this->serv, $this->port, $this->ssl);
         $client->setTimeout($this->timeout);
         $client->setKeepalive($this->keepalive);
         $client->setCookies($this->cookies);
         $client->setHeaders($this->headers);
-
+        $client->setPath($path);
         return $client;
     }
 
-    public function get($path)
+    public function get($path, $data = [])
     {   
         yield $this->parseDomain();
 
-        $client = $this->getClient();
+        if ($data) {
+            $path .= "?".http_build_query($data);
+        }
+        $client = $this->getClient($path);
         $client->setMethod("GET");
-        $client->setPath($path);
 
         $res = (yield $client);
         if ($res && $res['response']) {
@@ -92,9 +94,8 @@ class AsyncHttp
         yield $this->parseDomain();
 
         $this->headers['Content-Type'] = "application/x-www-form-urlencoded;charset=UTF-8";
-        $client = $this->getClient();
+        $client = $this->getClient($path);
         $client->setMethod("POST");
-        $client->setPath($path);
         $client->setData(http_build_query($data));
 
         $res = (yield $client);
