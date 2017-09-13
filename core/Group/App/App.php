@@ -267,7 +267,7 @@ class App
 
         $routings = [];
         foreach ($sources as $source) {
-            $routing = include_once __ROOT__."src/{$source}/routing.php";
+            $routing = require_once __ROOT__."src/{$source}/routing.php";
             if ($routing) {
                 $routings = array_merge($routings, $routing);
             }
