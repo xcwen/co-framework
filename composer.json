@@ -28,7 +28,7 @@
         "doctrine/dbal": "v2.5.12",
         "monolog/monolog":"~1.17.1",
         "symfony/http-foundation": "~2.7.0",
-        "phpunit/phpunit": "4.*",
+        "phpunit/phpunit": "5.7",
         "firebase/php-jwt": "5.0.0",
         "symfony/var-dumper": "~3.3.5",
         "facile-it/doctrine-mysql-come-back": "^1.6"
