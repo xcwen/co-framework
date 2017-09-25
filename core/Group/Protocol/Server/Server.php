@@ -12,7 +12,7 @@ use swoole_process;
 use swoole_server;
 use Log;
 
-class Server 
+class Server
 {
     protected $serv;
 
@@ -35,7 +35,7 @@ class Server
     protected $setting = [];
 
     public function __construct($config =[], $servName, $argv = [])
-    {   
+    {
         $this->argv = $argv;
         $config['config'] = array_merge($this->setting, $config['config']);
         $this->config = $config;
@@ -127,6 +127,10 @@ class Server
         $data = $this->parse($data);
         try {
             $config = $this->config;
+            Log::debug('123',['user'=>1]);
+            Log::debug("data:$data" );
+
+
 
             list($cmd, $data) = Protocol::unpack($data);
             switch ($cmd) {
@@ -196,6 +200,7 @@ class Server
 
     public function onFinish(swoole_server $serv, $fd, $data)
     {
+        Log::debug(" onFinish " );
         try {
             $forFd = $data['fd'];
 
@@ -255,9 +260,13 @@ class Server
                 return;
             }
 
+
+
+            Log::debug(" onFinish send data: ". $data['data'] );
             $this->sendData($serv, $forFd, $data['data']);
 
         } catch (\Exception $e) {
+            Log::debug(" onFinish send  error  record:". $e->getMessage() );
             $this->record([
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
@@ -269,7 +278,7 @@ class Server
     }
 
     private function sendData(swoole_server $serv, $fd, $data)
-    {   
+    {
         if ($data === false) {
             $data = 0;
         }
@@ -286,7 +295,8 @@ class Server
     }
 
     private function doAction($cmd, array $parameters, $server)
-    {   
+    {
+        Log::debug(" do Action" );
         list($class, $action) = explode("::", $cmd);
         list($group, $class) = explode("\\", $class);
         $service = "src\\Service\\$group\\Service\\Impl\\{$class}ServiceImpl";
@@ -312,7 +322,7 @@ class Server
     }
 
     private function record($e, $type = 'error')
-    {   
+    {
         $levels = array(
             E_WARNING => 'Warning',
             E_NOTICE => 'Notice',
@@ -337,7 +347,7 @@ class Server
     }
 
     private function checkStatus()
-    {   
+    {
         if(isset($this->argv[2])) {
 
             if (!file_exists($this->pidPath)) {
@@ -395,9 +405,9 @@ class Server
      * 向服务治理中心注册当前节点
      */
     public function registerNode()
-    {   
+    {
         if  (!isset($this->config['node_center'])) return;
-        
+
         $map = new ClassMap();
         $services = array_unique($map->doSearch());
 
@@ -433,7 +443,7 @@ class Server
      * 向服务治理中心移除当前节点
      */
     public function removeNode()
-    {   
+    {
         if  (!isset($this->config['node_center'])) return;
 
         $data = [
@@ -456,7 +466,7 @@ class Server
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
         $output = curl_exec($ch);

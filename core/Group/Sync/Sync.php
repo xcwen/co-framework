@@ -53,13 +53,13 @@ class Sync
         if ($node_center && $node_center != "") {
             $config[$argv[1]]['node_center'] = $node_center;
         }
-        
+
         if (!isset($config[$argv[1]])) return;
 
         $log = isset($config[$argv[1]]['config']['log_file']) ? $config[$argv[1]]['config']['log_file'] : 'runtime/service/default.log';
         $log = explode("/", $log);
         \FileCache::set(array_pop($log), '', implode("/", $log)."/");
-        
+
         $server = new Server($config[$argv[1]], $argv[1], $this->argv);
         die;
     }

@@ -46,29 +46,27 @@ return [
 
     'setting' => [
         //日志
-        'daemonize' => true,
+        //'daemonize' => true,
         'log_file' => 'runtime/error.log',
         'worker_num' => 2,    //worker process num
         'backlog' => 256,   //listen backlog
         'heartbeat_idle_time' => 30,
         'heartbeat_check_interval' => 10,
-        'dispatch_mode' => 1, 
+        'dispatch_mode' => 1,
         'max_request' => 10000,
     ],
 
-    //此参数可不填。通信协议 eof：结束符, buf：包头+包体。也可以填自定义的customProtocols
-    'protocol' => 'buf',
-    //包体的打包方式json,serialize
+    /*******客户端与服务端的数据发包设置********/
+    //默认不会发生粘包，可不填。通信协议 eof：结束符, buf：自定义包头+包体
+    'protocol' => 'eof',
+    //数据包体的打包方式json,serialize
     'pack' => 'json',
-    //是否启用gzip压缩true,false
+    //是否启用gzip压缩数据包true,false
     'gzip' => false,
 
-    'customProtocols' => [
-        'myeof' => 'src\Web\Protocol\MyeofProtocol',
-    ],
 
     //在启动时可以添加用户自定义的工作进程,必须是swoole_process
     'process' => [
-        'src\Admin\Process\HeartbeatProcess',
+        //'src\Admin\Process\HeartbeatProcess',
     ],
 ];

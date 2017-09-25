@@ -10,7 +10,7 @@ use Group\Config\Config;
 use swoole_process;
 
 class SwooleKernal
-{   
+{
     protected $http;
 
     protected $scheduler;
@@ -20,7 +20,7 @@ class SwooleKernal
     protected $pidPath;
 
     public function init()
-    {   
+    {
         $this->pidPath = __ROOT__."runtime/pid";
         $this->checkStatus();
 
@@ -37,9 +37,9 @@ class SwooleKernal
         $this->http->on('WorkerExit', [$this, 'onWorkerExit']);
         $this->http->on('Request', [$this, 'onRequest']);
         $this->http->on('shutdown', [$this, 'onShutdown']);
-        
+
         $this->addProcesses();
-        
+
         $this->start();
     }
 
@@ -62,7 +62,7 @@ class SwooleKernal
     }
 
     public function onWorkerStart($serv, $workerId)
-    {   
+    {
         if (function_exists('opcache_reset')) {
             opcache_reset();
         }
@@ -75,7 +75,7 @@ class SwooleKernal
         if (PHP_OS !== 'Darwin') {
             swoole_set_process_name("php http server: worker");
         }
-        
+
         echo "HTTP Worker Start...".PHP_EOL;
     }
 
@@ -105,7 +105,7 @@ class SwooleKernal
             $response->end();
             return;
         }
-        
+
         if ($this->maxTaskId >= PHP_INT_MAX) {
             $this->maxTaskId = 0;
         }
@@ -124,7 +124,7 @@ class SwooleKernal
     }
 
     public function start()
-    {   
+    {
         $this->http->start();
     }
 
@@ -150,7 +150,7 @@ class SwooleKernal
     }
 
     private function checkStatus()
-    {   
+    {
         $args = getopt('s:');
         if(isset($args['s'])) {
 
@@ -229,4 +229,3 @@ class SwooleKernal
         }
     }
 }
-

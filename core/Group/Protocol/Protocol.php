@@ -5,14 +5,14 @@ namespace Group\Protocol;
 use Config;
 use Group\Protocol\DataPack;
 
-class Protocol 
-{   
+class Protocol
+{
     protected static $packageEof = "\r\n";
 
     protected static $protocol = false;
 
     public static function pack($data = [])
-    {   
+    {
         if (!self::$protocol) {
             self::$protocol = Config::get("app::protocol");
         }

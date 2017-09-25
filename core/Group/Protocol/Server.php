@@ -8,7 +8,7 @@ use Group\Protocol\Server\EofServer;
 use Group\Protocol\Server\Server as Serv;
 
 class Server
-{   
+{
     protected $setting;
 
     public function __construct($config =[], $servName, $argv = [])

@@ -7,13 +7,13 @@ use Group\Protocol\DataPack;
 use Group\Protocol\Protocol;
 
 class ServiceProtocol extends Protocol
-{   
+{
     protected static $packageEof = "\r\n";
 
     protected static $protocol = false;
 
     public static function pack($cmd = '', $data = [])
-    {   
+    {
         if ($cmd == '' && is_string($data)) {
             return $data;
         }
