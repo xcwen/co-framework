@@ -10,7 +10,7 @@ use Group\Events\HttpEvent;
 use Group\Events\KernalEvent;
 
 class Container implements ContainerContract
-{   
+{
     protected $instances;
 
     private static $instance;
@@ -56,7 +56,7 @@ class Container implements ContainerContract
     }
 
     /**
-     *  向App存储一个单例对象
+     *  向 Container 存储一个单例对象
      *
      * @param  name，callable
      * @return object
@@ -111,7 +111,7 @@ class Container implements ContainerContract
             if (isset($parameters[$paramName])) $args[$paramName] = $parameters[$paramName];
             if (!empty($arg->getClass()) && $arg->getClass()->getName() == 'Group\Http\Request') $args[$paramName] = $request;
         }
-        
+
         return $method->invokeArgs($instanc, $args);
     }
 
@@ -226,7 +226,7 @@ class Container implements ContainerContract
      *
      */
     public function setRequest(\Request $request)
-    {   
+    {
         $this->request = $request;
         yield $this->singleton('eventDispatcher')->dispatch(KernalEvent::REQUEST, new HttpEvent($request, null, $this->swooleResponse, $this));
     }

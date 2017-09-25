@@ -1,4 +1,5 @@
 <?php
+
 class App Extends Group\App\App{}
 class Config Extends Group\Config\Config{}
 class Container Extends Group\Container\Container{}
@@ -23,3 +24,6 @@ class AsyncLog Extends Group\Async\AsyncLog{}
 class AsyncService Extends Group\Async\AsyncService{}
 class AsyncTcp Extends Group\Async\AsyncTcp{}
 class AsyncHttp Extends Group\Async\AsyncHttp{}
+class Log Extends Group\Sync\Log\Log{}
+class Dao Extends Group\Sync\Dao\Dao{}
+

@@ -10,7 +10,7 @@ use Group\Coroutine\Scheduler;
  * Get the available container instance.
  *
  * @param  string  $abstract
- * @return mixed|\Group\App\App
+ * @return \Group\App\App|mixed
  */
 function app($abstract = null)
 {
@@ -91,11 +91,22 @@ function getTaskId() {
     });
 }
 
+
+/**
+ * 返回一个service对象
+ *
+ * @return Container 
+ *
+ */
 function getContainer() {
+
     return new SysCall(function(Task $task){
+        // yield  \Group\Async\AsyncLog::debug(" getContainer 002 ");
         $task->send($task->getContainer());
+            //yield  \Group\Async\AsyncLog::debug(" getContainer 003 ");
         $task->run();
     });
+
 }
 
 function throwException($e) {

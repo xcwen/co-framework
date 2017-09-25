@@ -13,6 +13,7 @@ use Group\Container\Container;
 use Group\Events\Event;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Group\Events\ExceptionEvent;
+use Log;
 
 class App
 {
@@ -80,7 +81,7 @@ class App
     protected $names = [];
 
     public function __construct()
-    { 
+    {
         $this->aliasLoader();
 
         $this->doSingle();
@@ -103,8 +104,9 @@ class App
      *
      */
     public function terminate($request, $response)
-    {   
-        $container = (yield getContainer());
+    {
+        yield \Group\Async\AsyncLog::error("XCWENN 111 ");
+        $container = yield getContainer();
         $container->setAppPath(__ROOT__);
 
         $this->registerOnRequestServices($container);
@@ -122,8 +124,10 @@ class App
 
         $container->setSwooleResponse($response);
         yield $container->setRequest($request);
-        
+
         $container->router = new Router($container, $this->routing);
+
+        //处理命令
         yield $container->router->match();
 
         yield $this->handleSwooleHttp($response);
@@ -147,7 +151,7 @@ class App
      * @return object
      */
     public function singleton($name, $callable = null)
-    {   
+    {
         if (!isset($this->instances[$name]) && $callable) {
             $this->instances[$name] = call_user_func($callable);
         }
@@ -160,7 +164,7 @@ class App
      *
      */
     public function doSingle()
-    {   
+    {
         $singles = Config::get('app::singles');
         $this->singles = array_merge($singles, $this->singles);
         foreach ($this->singles as $alias => $class) {
@@ -185,7 +189,7 @@ class App
     }
 
     public function getOnRequestServicesName()
-    {   
+    {
         if (empty($this->names)) {
             $names = [];
             foreach ($this->onRequestServices as $provider) {
@@ -195,14 +199,14 @@ class App
 
             $this->names = $names;
         }
-        
+
         return $this->names;
     }
 
     /**
      * return single class
      *
-     * @return core\App\App App
+     * @return Group\App\App App
      */
     public static function getInstance()
     {
@@ -218,12 +222,15 @@ class App
      *
     */
     public function handleSwooleHttp($swooleHttpResponse)
-    {   
+    {
         $container = (yield getContainer());
         $response = $container->getResponse();
         $request = $container->getRequest();
 
-        yield $container->singleton('eventDispatcher')->dispatch(KernalEvent::RESPONSE, new HttpEvent($request, $response, $swooleHttpResponse));
+
+        /**  @var   Group\EventDispatcher\EventDispatcherService  $eventDispatcher  */
+        $eventDispatcher=  $container->singleton('eventDispatcher');
+        yield $eventDispatcher->dispatch(KernalEvent::RESPONSE, new HttpEvent($request, $response, $swooleHttpResponse));
 
         yield $this->release($container);
         unset($container);
@@ -261,7 +268,7 @@ class App
     }
 
     private function initRoutingConfig()
-    {   
+    {
         $file = 'route/routing.php';
         $sources = Config::get('routing::source');
 
@@ -272,8 +279,8 @@ class App
             if ($routing) {
                 $routings = array_merge($routings, $routing);
             }
-        }   
-    
+        }
+
         $this->routing = $routings;
     }
 
@@ -302,7 +309,10 @@ class App
             return $this->instances[$abstract];
         }
 
-        $reflector = app('container')->buildMoudle($abstract);
+        /** @var Container  $container */
+        $container= app('container');
+
+        $reflector = $container->buildMoudle($abstract);
         if (!$reflector->isInstantiable()) {
             throw new Exception("Target [$concrete] is not instantiable!");
         }
@@ -318,7 +328,6 @@ class App
         if (is_null($constructor)) {
             return new $abstract;
         }
-
         return null;
     }
 }

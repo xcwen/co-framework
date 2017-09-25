@@ -5,7 +5,7 @@ namespace Group\Coroutine;
 use Group\Handlers\ExceptionsHandler;
 
 class Task
-{   
+{
     public $container;
 
     protected $taskId;
@@ -43,7 +43,7 @@ class Task
 
     /**
      * 获取task id
-     * @return int 
+     * @return int
      */
     public function getTaskId()
     {
@@ -121,7 +121,7 @@ class Task
                         return;
                     } else {
                         //此时上层已经无法catch了
-                        throw $e; 
+                        throw $e;
                     }
                 }
 
