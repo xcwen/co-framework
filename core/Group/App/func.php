@@ -60,7 +60,7 @@ function json($data = [], $status = 200, array $headers = [], $options = 0)
  *
  */
 function service_center($serviceName)
-{   
+{
     $container = (yield getContainer());
 
     if (!$container->singleton('serviceCenter')->getService($serviceName)) {
@@ -71,7 +71,7 @@ function service_center($serviceName)
     $container->singleton('serviceCenter')->setContainer($container);
     yield $container->singleton('serviceCenter')->createService($serviceName);
 }
-    
+
 /**
  * 返回一个service对象
  *
@@ -80,7 +80,7 @@ function service_center($serviceName)
  *
  */
 function service($serviceName)
-{   
+{
     return app('service')->createService($serviceName);
 }
 
@@ -91,22 +91,33 @@ function getTaskId() {
     });
 }
 
+function mylog( $msg ) {
+    return \src\Utils\Logger::write($msg);
+}
+
+
 
 /**
  * 返回一个service对象
  *
- * @return Container 
+ * @return Container
  *
  */
 function getContainer() {
 
-    return new SysCall(function(Task $task){
+    mylog("xxxx 0.00");
+    $ret= new SysCall(function(Task $task){
+
+        mylog("xxxx 1.11 taskid: ". $task->getTaskId() );
         // yield  \Group\Async\AsyncLog::debug(" getContainer 002 ");
         $task->send($task->getContainer());
+        mylog("xxxx 2.11");
             //yield  \Group\Async\AsyncLog::debug(" getContainer 003 ");
         $task->run();
+        mylog("xxxx 3.11");
     });
-
+    mylog("xxxx 0.02");
+    return $ret;
 }
 
 function throwException($e) {

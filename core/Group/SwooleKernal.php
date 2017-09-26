@@ -14,6 +14,9 @@ class SwooleKernal
     protected $http;
 
     protected $scheduler;
+    /**
+     * @var App
+     */
 
     protected $app;
 
@@ -111,7 +114,9 @@ class SwooleKernal
         }
         $taskId = ++$this->maxTaskId;
         $container = new Container();
+        mylog("xxx task ");
         $task = new \Group\Coroutine\Task($taskId, $container, $this->app->terminate($request, $response));
+        mylog("xxx task end");
         $task->run();
 
         unset($container);

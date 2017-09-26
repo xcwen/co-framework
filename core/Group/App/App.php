@@ -105,8 +105,11 @@ class App
      */
     public function terminate($request, $response)
     {
-        yield \Group\Async\AsyncLog::error("XCWENN 111 ");
-        $container = yield getContainer();
+        mylog("xxxx 11");
+        $call=getContainer();
+        mylog("xxxx kkk");
+        $container = yield $call;
+        mylog("xxxx 222");
         $container->setAppPath(__ROOT__);
 
         $this->registerOnRequestServices($container);

@@ -12,6 +12,10 @@ class Task
 
     protected $coStack;
 
+
+    /**
+     * @var \Generator
+     */
     protected $coroutine;
 
     protected $exception = null;
@@ -25,6 +29,15 @@ class Task
      */
     public function __construct($taskId, $container, \Generator $coroutine)
     {
+        mylog("Task gen: taskid: $taskId ");
+
+        $e=new \Exception();
+        foreach( $e->getTrace() as &$bt_item ) {
+            //$args=json_encode($bt_item["args"]);
+            mylog( @$bt_item["class"]. @$bt_item["type"]. @$bt_item["function"]."---".
+                   @$bt_item["file"].":".@$bt_item["line"]. "<br/>");
+        }
+
         $this->taskId = $taskId;
         $this->container = $container;
         $this->coroutine = $coroutine;
