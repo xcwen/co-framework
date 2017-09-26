@@ -10,6 +10,9 @@ class Task
 
     protected $taskId;
 
+    /**
+     * @var \SplStack
+     */
     protected $coStack;
 
 
@@ -89,6 +92,9 @@ class Task
 
                 //如果是coroutine，入栈
                 if ($value instanceof \Generator) {
+                    mylog(" task run Generator:". $this->coStack->count() );
+                    mylog(" task run Generator:push ". json_encode($this->coroutine) );
+
                     $this->coStack->push($this->coroutine);
                     $this->coroutine = $value;
                     continue;
@@ -97,12 +103,16 @@ class Task
                 //如果为null，而且栈不为空，出栈
                 if (is_null($value) && !$this->coStack->isEmpty()) {
                     $this->coroutine = $this->coStack->pop();
+
+                    mylog(" task run Generator:pop ". json_encode($this->coroutine) );
+                    mylog(" task run Generator:send ". json_encode($this->sendValue ) );
                     $this->coroutine->send($this->sendValue);
                     continue;
                 }
 
                 //如果是系统调用
                 if ($value instanceof SysCall || is_subclass_of($value, SysCall::class)) {
+                    mylog(" task run SysCall :". json_encode($value) );
                     call_user_func($value, $this);
                     return;
                 }

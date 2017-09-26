@@ -38,6 +38,11 @@ class Container implements ContainerContract
      */
     protected $request;
 
+
+    /**
+     *
+     * @var Group\Routing\Router;
+     */
     public $router;
 
     protected $debug = false;

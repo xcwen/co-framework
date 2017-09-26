@@ -115,9 +115,11 @@ class SwooleKernal
         $taskId = ++$this->maxTaskId;
         $container = new Container();
         mylog("xxx task ");
-        $task = new \Group\Coroutine\Task($taskId, $container, $this->app->terminate($request, $response));
-        mylog("xxx task end");
+        $ter=$this->app->terminate($request, $response);
+        $task = new \Group\Coroutine\Task($taskId, $container, $ter );
+        mylog("xxx task  run start");
         $task->run();
+        mylog("xxx task  run end");
 
         unset($container);
         unset($task);

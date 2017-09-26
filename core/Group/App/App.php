@@ -105,9 +105,11 @@ class App
      */
     public function terminate($request, $response)
     {
-        mylog("xxxx 11");
+        mylog("terminate start .. ");
         $call=getContainer();
-        mylog("xxxx kkk");
+        mylog("terminate gen getContainer end  ");
+        //yield \AsyncLog::debug("KKKKK");
+        mylog("AsyncLog end ");
         $container = yield $call;
         mylog("xxxx 222");
         $container->setAppPath(__ROOT__);
