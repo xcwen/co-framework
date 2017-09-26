@@ -19,7 +19,7 @@ class Dao
     /**
      * 获取默认服务器连接
      *
-     * @return object
+     * @return Doctrine\DBAL\Connection
      */
     public function getDefault()
     {
@@ -175,11 +175,14 @@ class Dao
         return $connections;
     }
 
-    private function logger($connection)
-    {   
-        // if (app('container')->isDebug() && !app('container') ->runningInConsole()) {
-        //     $connection->getConfiguration()->setSQLLogger(app('debugStack'));
-        // }
+    private function logger( \Doctrine\DBAL\Connection $connection)
+    {
+
+        //$connection->getConfiguration()->setSQLLogger(app('debugStack'));
+        /*
+         if (app('container')->isDebug() ) {
+         }
+        */
 
         // if ($connection->ping() === false) {
         //    $connection->close();

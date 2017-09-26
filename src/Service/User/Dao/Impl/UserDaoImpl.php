@@ -33,12 +33,12 @@ class UserDaoImpl extends Dao implements UserDao
 
     public function getUserByMobile($mobile)
     {
-        $queryBuilder = $this->getDefault()->createQueryBuilder();
-        $queryBuilder
-            ->select("*")
-            ->from($this->table)
-            ->where('mobile = ?')
-            ->setParameter(0, $mobile);
+        $connection= $this->getDefault();
+        $queryBuilder = $connection->createQueryBuilder();
+        $queryBuilder->select("*")
+             ->from($this->table)
+             ->where('mobile = ?')
+             ->setParameter(0, $mobile);
 
         return $queryBuilder->execute()->fetch();
     }

@@ -4,6 +4,7 @@ namespace src\Service\User\Service\Impl;
 
 use src\Service\User\Service\Rely\UserBaseService;
 use src\Service\User\Service\UserService;
+use Log;
 
 class UserServiceImpl extends UserBaseService implements UserService
 {
@@ -35,6 +36,7 @@ class UserServiceImpl extends UserBaseService implements UserService
 
     public function addUser($user)
     {
+        Log::debug("addUser:" .json_encode($user ));
         if ($this->getUserByMobile($user['mobile'])) {
             return false;
         }
