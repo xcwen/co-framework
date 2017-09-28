@@ -6,6 +6,10 @@ use Group\Handlers\ExceptionsHandler;
 
 class Task
 {
+
+    /**
+     * @var \Container
+     */
     public $container;
 
     protected $taskId;
@@ -37,7 +41,7 @@ class Task
         $e=new \Exception();
         foreach( $e->getTrace() as &$bt_item ) {
             //$args=json_encode($bt_item["args"]);
-            mylog( @$bt_item["class"]. @$bt_item["type"]. @$bt_item["function"]."---".
+            mylog(@$bt_item["class"]. @$bt_item["type"]. @$bt_item["function"]."---".
                    @$bt_item["file"].":".@$bt_item["line"]. "<br/>");
         }
 

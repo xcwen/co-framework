@@ -22,7 +22,9 @@ class Container implements ContainerContract
     protected $appPath;
 
     protected $locale;
-
+    /**
+     * @var \swoole_http_response
+     */
     protected $swooleResponse;
     /**
      * Response object
@@ -58,6 +60,13 @@ class Container implements ContainerContract
         $this->setLocale();
 
         $this->needDebug();
+    }
+
+    /**
+     * @return Group\EventDispatcher\EventDispatcherService
+     */
+    public function singleton_eventDispatcher( $callable = null) {
+        return  $container->singleton('eventDispatcher');
     }
 
     /**
@@ -120,11 +129,16 @@ class Container implements ContainerContract
         return $method->invokeArgs($instanc, $args);
     }
 
+
     public function setSwooleResponse($response)
     {
         $this->swooleResponse = $response;
     }
 
+
+    /**
+     * @return \swoole_http_response
+     */
     public function getSwooleResponse()
     {
         return $this->swooleResponse;

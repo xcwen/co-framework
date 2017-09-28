@@ -233,8 +233,7 @@ class App
         $request = $container->getRequest();
 
 
-        /**  @var   Group\EventDispatcher\EventDispatcherService  $eventDispatcher  */
-        $eventDispatcher=  $container->singleton('eventDispatcher');
+        $eventDispatcher=  $container->singleton_eventDispatcher();
         yield $eventDispatcher->dispatch(KernalEvent::RESPONSE, new HttpEvent($request, $response, $swooleHttpResponse));
 
         yield $this->release($container);
